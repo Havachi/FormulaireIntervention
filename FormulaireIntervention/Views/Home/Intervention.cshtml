@@ -3,5 +3,27 @@
     ViewBag.Title = "Intervention";
 }
 
-<h2>Intervention</h2>
+<h2>Information sur l'intervention</h2>
 
+<form class="form-group">
+    <label for="intervIntervenant">Intervenant</label>
+    <select class="form-control" id="intervIntervenant">
+        <option>D'Angelo</option>
+        <option>Sofian</option>
+        <option>Alessandro</option>
+    </select>
+
+    <label for="interType">Type d'intervention</label>
+    <select class="form-control" id="intervType">
+        <option>Dépannage</option>
+        <option>Cours à domicile</option>
+        <option>Autre</option>
+    </select>
+
+    <label for="intervStart">Début de l'intervention</label>
+    <input class="form-control" type="time" id="intervStart" />
+    <label for="intervEnd">Fin de l'intervention</label>
+    <input class="form-control" type="time" id="intervEnd" />
+    <br />
+    <input class="btn btn-default" type="submit" value="Valider"/>
+</form>
