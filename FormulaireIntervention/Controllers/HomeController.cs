@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -20,9 +20,9 @@ namespace FormulaireIntervention.Controllers
             return View();
         }
 
-        public ActionResult Contact()
+        public ActionResult Existing_Client()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Client Existant";
 
             return View();
         }
