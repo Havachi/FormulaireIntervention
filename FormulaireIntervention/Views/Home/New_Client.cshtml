@@ -1,0 +1,47 @@
+﻿@model FormulaireIntervention.Models.New_Client
+
+@{
+    ViewBag.Title = "Nouveau Client";
+
+    var firstName = "";
+    var lastName = "";
+    var address = "";
+    var phoneNumber = "";
+
+    if (IsPost)
+    {
+        firstName = Request.Form["firstName"];
+        lastName = Request.Form["lastName"];
+        address = Request.Form["address"];
+        phoneNumber = Request.Form["phoneNumber"];       
+        var client = new FormulaireIntervention.Models.New_Client(firstName,lastName,address,phoneNumber);
+        
+    }
+}
+
+<h2>Nouveau Client</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        <label for="firstName">Nom: </label>
+        <input class="form-control" type="text" id="firstName" name="firstName"><br>
+
+        <label for="lastName">Prénom: </label>
+        <input class="form-control" type="text" id="lastName" name="lastName"><br>
+
+        <label for="address">Adresse: </label>
+        <input class="form-control" type="text" id="address" name="address"><br>
+
+        <label for="phoneNumber">Numéro de téléphone: </label>
+        <input class="form-control" type="text" id="phoneNumber" name="phoneNumber"><br>
+        
+        <input type="submit" value="Create" class="btn btn-default" />
+    </div>
+</div>
+}
