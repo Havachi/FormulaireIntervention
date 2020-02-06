@@ -13,16 +13,33 @@ namespace FormulaireIntervention.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult New_Client()
         {
-            ViewBag.Message = "Your application description page.";
-
+            ViewBag.Message = "Nouveau Client";
+            
             return View();
         }
 
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
+
+            return View();
+        }
+        public ActionResult Intervention()
+        {
+            ViewBag.Message = "Intervention";
+
+            return View();
+        }
+        public ActionResult Resume()
+        {
+            ViewBag.Message = "Résumé";
+            return View();
+        }
+        public ActionResult Client_Sign()
+        {
+            ViewBag.Message = "Signature Client";
 
             return View();
         }
