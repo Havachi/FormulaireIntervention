@@ -8,7 +8,7 @@ namespace FormulaireIntervention.Models
     public class InterventionType
     {
         private string interventionType;
-        public InterventionType (string interventionType)
+        public InterventionType(string interventionType)
         {
             this.interventionType = interventionType;
         }
