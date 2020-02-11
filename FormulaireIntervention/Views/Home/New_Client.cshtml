@@ -13,35 +13,58 @@
         firstName = Request.Form["firstName"];
         lastName = Request.Form["lastName"];
         address = Request.Form["address"];
-        phoneNumber = Request.Form["phoneNumber"];       
-        var client = new FormulaireIntervention.Models.New_Client(firstName,lastName,address,phoneNumber);
-        
+        phoneNumber = Request.Form["phoneNumber"];
+
+
+    }
+}
+
+@{
+
+    //var db  =
+    var Name = Request.Form["Name"];
+    var Description = Request.Form["Description"];
+    var Price = Request.Form["Price"];
+
+    if (IsPost && Validation.IsValid())
+    {
+        // Define the insert query. The values to assign to the
+        // columns in the Product table are defined as parameters
+        // with the VALUES keyword.
+        if (ModelState.IsValid)
+        {
+            var insertQuery = "INSERT INTO Product (Name, Description, Price) " +
+                "VALUES (@0, @1, @2)";
+            db.Execute(insertQuery, Name, Description, Price);
+            // Display the page that lists products.
+            Response.Redirect("~/ListProducts");
+        }
     }
 }
 
 <h2>Nouveau Client</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("New_Client_Validation", "Home", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
 
-<div class="form-horizontal">
-    <hr />
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    <div class="form-group">
-        <label for="firstName">Nom: </label>
-        <input class="form-control" type="text" id="firstName" name="firstName"><br>
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <label for="firstName">Nom: </label>
+            <input class="form-control" type="text" id="firstName" name="firstName"><br>
 
-        <label for="lastName">Prénom: </label>
-        <input class="form-control" type="text" id="lastName" name="lastName"><br>
+            <label for="lastName">Prénom: </label>
+            <input class="form-control" type="text" id="lastName" name="lastName"><br>
 
-        <label for="address">Adresse: </label>
-        <input class="form-control" type="text" id="address" name="address"><br>
+            <label for="address">Adresse: </label>
+            <input class="form-control" type="text" id="address" name="address"><br>
 
-        <label for="phoneNumber">Numéro de téléphone: </label>
-        <input class="form-control" type="text" id="phoneNumber" name="phoneNumber"><br>
-        
-        <input type="submit" value="Create" class="btn btn-default" />
+            <label for="phoneNumber">Numéro de téléphone: </label>
+            <input class="form-control" type="text" id="phoneNumber" name="phoneNumber"><br>
+
+            <input type="submit" value="Create" class="btn btn-default" />
+        </div>
     </div>
-</div>
 }

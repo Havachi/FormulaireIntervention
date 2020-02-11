@@ -1,6 +1,9 @@
-﻿
+﻿@model FormulaireIntervention.Models.Intervention
+
 @{
     ViewBag.Title = "Resume";
+
+
 }
 
 <h2>Résumé</h2>
@@ -10,8 +13,8 @@
     <br />
     <h4 class="list-group-item-heading">Information sur le client : </h4>
     <ul class="list-group">
-
-        <li class="list-group-item"><p>Nom du client : </p></li>
+        
+        <li class="list-group-item"><p>Nom du client : <%response.write("SAuce")%></p></li>
         <li class="list-group-item"><p>Prénom du client : </p></li>
         <li class="list-group-item"><p>Adresse du client : </p></li>
         <li class="list-group-item"><p>Numéro de téléphone du client : </p></li>

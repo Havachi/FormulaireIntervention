@@ -12,6 +12,11 @@ namespace FormulaireIntervention.Models
         protected string phoneNumber;
         protected string address;
 
+        protected Client()
+        {
+
+        }
+
         protected Client(string FirstName, string LastName, string PhoneNumber, string Address)
         {
 

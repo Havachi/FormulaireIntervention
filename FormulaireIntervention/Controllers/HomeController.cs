@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using FormulaireIntervention.Models;
 
 namespace FormulaireIntervention.Controllers
 {
@@ -16,16 +17,30 @@ namespace FormulaireIntervention.Controllers
         public ActionResult New_Client()
         {
             ViewBag.Message = "Nouveau Client";
-            
+
             return View();
         }
+        [HttpPost]
+        public ActionResult New_Client_Validation(New_Client new_Client)
+        {
+            ViewBag.Message = "Validation";
 
+
+            string firstName = new_Client.FirstName;
+            string lastName = new_Client.LastName;
+            string phoneNumber = new_Client.PhoneNumber;
+            string address = new_Client.Address;
+
+            return View();
+        }    
         public ActionResult Existing_Client()
         {
             ViewBag.Message = "Client Existant";
 
             return View();
         }
+
+        
         public ActionResult Intervention()
         {
             ViewBag.Message = "Intervention";
@@ -35,6 +50,8 @@ namespace FormulaireIntervention.Controllers
         public ActionResult Resume()
         {
             ViewBag.Message = "Résumé";
+
+
             return View();
         }
         public ActionResult Client_Sign()
