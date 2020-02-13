@@ -149,6 +149,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Client.cs" />
+    <Compile Include="Models\DBConnection.cs" />
     <Compile Include="Models\Intervenant.cs" />
     <Compile Include="Models\Intervention.cs" />
     <Compile Include="Models\InterventionType.cs" />

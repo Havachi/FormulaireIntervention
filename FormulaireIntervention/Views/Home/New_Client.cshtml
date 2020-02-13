@@ -1,50 +1,42 @@
-﻿@model FormulaireIntervention.Models.New_Client
+﻿@model FormulaireIntervention.Models.DBConnection
 
 @{
+    //Variables declaration
     ViewBag.Title = "Nouveau Client";
 
-    var firstName = "";
-    var lastName = "";
-    var address = "";
-    var phoneNumber = "";
-
-    if (IsPost)
-    {
-        firstName = Request.Form["firstName"];
-        lastName = Request.Form["lastName"];
-        address = Request.Form["address"];
-        phoneNumber = Request.Form["phoneNumber"];
 
 
-    }
 }
 
 @{
 
-    //var db  =
-    var Name = Request.Form["Name"];
-    var Description = Request.Form["Description"];
-    var Price = Request.Form["Price"];
 
-    if (IsPost && Validation.IsValid())
+    if (IsPost)
     {
-        // Define the insert query. The values to assign to the
-        // columns in the Product table are defined as parameters
-        // with the VALUES keyword.
-        if (ModelState.IsValid)
+        var firstName = Request.Form["firstName"];
+        var lastName = Request.Form["lastName"];
+        var address = Request.Form["address"];
+        var phoneNumber = Request.Form["phoneNumber"];
+
+        try
         {
-            var insertQuery = "INSERT INTO Product (Name, Description, Price) " +
-                "VALUES (@0, @1, @2)";
-            db.Execute(insertQuery, Name, Description, Price);
-            // Display the page that lists products.
-            Response.Redirect("~/ListProducts");
+            Model.InsertNewClientInDatabase(firstName, lastName, address, phoneNumber);
         }
+        catch(Exception e)
+        {
+            Html.Display(e.Message);
+        }
+        finally
+        {
+            Response.Redirect("~/Intervention");
+        }
+       
     }
 }
 
 <h2>Nouveau Client</h2>
 
-@using (Html.BeginForm("New_Client_Validation", "Home", FormMethod.Post))
+@using (Html.BeginForm("Intervention", "Home", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
 
