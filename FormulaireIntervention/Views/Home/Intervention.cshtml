@@ -2,7 +2,6 @@
     ViewBag.Title = "Intervention";
 }
 @{
-    ViewBag.Title = "Nouveau Client";
 
     var intervenant = "";
     var intervType = "";
@@ -11,17 +10,17 @@
 
     if (IsPost)
     {
+
         intervenant = Request.Form["intervIntervenant"];
         intervType = Request.Form["intervType"];
         intervStart = Request.Form["intervStart"];
         intervEnd = Request.Form["intervEnd"];
-        
-
     }
 }
 <h2>Information sur l'intervention</h2>
 
-<form class="form-group" action="post">
+@using (Html.BeginForm("Resume", "Home", FormMethod.Post)) { 
+
     <label for="intervIntervenant">Intervenant</label>
     <select class="form-control" id="intervIntervenant">
         <option>D'Angelo</option>
@@ -42,4 +41,4 @@
     <input class="form-control" type="time" id="intervEnd" />
     <br />
     <input class="btn btn-default" type="submit" value="Valider" />
-</form>
+}
