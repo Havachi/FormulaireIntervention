@@ -44,5 +44,33 @@ namespace FormulaireIntervention.Models
             int result = command.ExecuteNonQuery();
             connection.Close();
         }
+        public void SelectInDB(string table)
+        {
+            Init();
+            string selectCommand = $@"SELECT * IN {table};";
+        }
+        public void SelectInDB(string table, string column)
+        {
+            Init();
+            string selectCommand = $@"SELECT {column} IN {table};";
+        }
+        public void SelectInDB(string table, int ID)
+        {
+            Init();
+            string selectCommand = "";
+            MySqlCommand command;
+            MySqlDataReader dataReader;
+            if (table == "clients")
+            {
+                selectCommand = $@"SELECT * IN {table} WHERE ClientID = '1' ;";
+            }
+            else if (table == "intervenant")
+            {
+                selectCommand = $@"SELECT * IN {table} WHERE IntervenantID = '1' ;";
+            }
+
+            command = new MySqlCommand(selectCommand, connection);
+            
+        }
     }
 }
