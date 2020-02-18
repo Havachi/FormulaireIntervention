@@ -9,13 +9,22 @@ namespace FormulaireIntervention.Models
 {
     public class DBConnection
     {
-        string connectionString;
         private MySqlConnection connection;
+        private MySqlCommand command;
 
+
+        public DBConnection()
+        {
+            Init();
+        }
         private void Init()
         {
-            connectionString = $@"Host=localhost; Database=formulaireintervention; Username=dbconnector; Password=Pa$$w0rd";
-            connection = new MySqlConnection(connectionString);
+            MySqlConnectionStringBuilder stringBuilder = new MySqlConnectionStringBuilder();
+            stringBuilder.Server = "localhost";           
+            stringBuilder.Database = "formulaireintervention";
+            stringBuilder.UserID = "DBconnector";
+            stringBuilder.Password = "Pa$$w0rd";
+            connection = new MySqlConnection(stringBuilder.ToString());
             connection.Open();
         }
         private void Open(MySqlConnection connection)
@@ -27,50 +36,106 @@ namespace FormulaireIntervention.Models
             connection.Dispose();
         }
         
+
+        
         public void InsertNewClientInDatabase(string firstName, string lastName, string address, string phoneNumber)
-        {
-            Init();
-           
-            string insertCommand = $@"INSERT INTO clients(ClientFirstName, ClientLastName, ClientAddress, ClientPhoneNumber)
-                                        values (@firstName, @lastName,@address,@phoneNumber)";
+        {         
+            string insertCommand = $@"INSERT INTO clients(ClientFirstName, ClientLastName, ClientAddress, ClientPhoneNumber) VALUES ('{firstName}','{lastName}','{address}','{phoneNumber}')";
 
-            MySqlCommand command = new MySqlCommand(insertCommand,connection);
-
-            command.Parameters.AddWithValue("@firstName", firstName);
-            command.Parameters.AddWithValue("@lastName", lastName);
-            command.Parameters.AddWithValue("@address", address);
-            command.Parameters.AddWithValue("@phoneNumber", phoneNumber);
-
+            command = new MySqlCommand(insertCommand,connection);
             int result = command.ExecuteNonQuery();
             connection.Close();
         }
-        public void SelectInDB(string table)
+        public void InsertNewClientInDatabase(int ID,string firstName, string lastName, string address, string phoneNumber)
         {
-            Init();
-            string selectCommand = $@"SELECT * IN {table};";
+            string insertCommand = $@"INSERT INTO clients(ClientID,ClientFirstName, ClientLastName, ClientAddress, ClientPhoneNumber) VALUES ('{ID}','{firstName}','{lastName}','{address}','{phoneNumber}')";
+
+            command = new MySqlCommand(insertCommand, connection);
+            int result = command.ExecuteNonQuery();
+            connection.Close();
         }
-        public void SelectInDB(string table, string column)
+
+        public List<string> SelectOneClientInDB(int ID)
         {
-            Init();
-            string selectCommand = $@"SELECT {column} IN {table};";
-        }
-        public void SelectInDB(string table, int ID)
-        {
-            Init();
-            string selectCommand = "";
-            MySqlCommand command;
-            MySqlDataReader dataReader;
-            if (table == "clients")
+            string selectCommand = $@"SELECT * FROM clients WHERE ClientID = '{ID}' ;";
+            command = new MySqlCommand(selectCommand, connection);
+            var reader = command.ExecuteReader();
+            var resultList = new List<string>();
+            if (reader.HasRows)
             {
-                selectCommand = $@"SELECT * IN {table} WHERE ClientID = '1' ;";
+                int counter = 0;
+                while (reader.Read())
+                {
+                    resultList.Add(reader.GetString(counter));
+                    counter++; 
+                }
             }
-            else if (table == "intervenant")
+            reader.Close();
+            connection.Close();
+            return resultList;
+        }
+
+        public int SelectClientIDInDB(string firstName, string lastName)
+        {
+            string selectCommand = $@"SELECT ClientID FROM clients WHERE ClientFirstName = '{firstName}' AND ClientLastName = '{lastName}'  ;";
+            command = new MySqlCommand(selectCommand, connection);
+            var reader = command.ExecuteReader();
+            int resultID = 0;
+            if (reader.HasRows)
             {
-                selectCommand = $@"SELECT * IN {table} WHERE IntervenantID = '1' ;";
+                int counter = 0;
+                while (reader.Read())
+                {
+                    resultID = reader.GetInt16(0);
+                    counter++;
+                }
+            }
+            reader.Close();
+            connection.Close();
+            return resultID;
+        }
+        public void DeleteUserInDB(int ID)
+        {
+            string selectCommand = $@"DELETE FROM clients WHERE ClientID = '{ID}' ;";
+            command = new MySqlCommand(selectCommand, connection);
+            int result = command.ExecuteNonQuery();
+            if (result != 1)
+            {
+                throw new UnknownClient("The client isn't existing in database");
+            }   
+            
+        }
+        public void DeleteUserInDB(string firstName, string lastName)
+        {
+            string selectCommand = $@"SELECT ClientID FROM clients WHERE ClientFirstName = '{firstName}'  AND ClientLastName = '{lastName}' ;";
+            command = new MySqlCommand(selectCommand, connection);
+            var reader = command.ExecuteReader();
+            List<int> IDList = new List<int>();
+            int counter = 0;
+            if (reader.HasRows)
+            {
+                
+                while (reader.Read())
+                {
+                    IDList.Add( reader.GetInt16(0));
+                    counter++;
+                }
             }
 
-            command = new MySqlCommand(selectCommand, connection);
+            reader.Close();
             
+            if (counter == 0)
+            {
+                throw new UnknownClient("The client isn't existing in database");
+            }
+            else
+            {
+                foreach (var id in IDList)
+                {
+                    DeleteUserInDB(id);
+                }             
+            }
+            connection.Close();
         }
     }
 }

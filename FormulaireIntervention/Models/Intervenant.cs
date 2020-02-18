@@ -22,7 +22,7 @@ namespace FormulaireIntervention.Models
         {
             List<string> listIntervenant = new List<string>();
             DBConnection DB = new DBConnection();
-            DB.
+            
             
 
             return listIntervenant;

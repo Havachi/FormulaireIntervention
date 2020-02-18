@@ -15,13 +15,13 @@ namespace FormulaireIntervention.Views.Home
     {
 
         /// <summary>
-        /// Contrôle form1.
+        /// Contrôle formIntervention.
         /// </summary>
         /// <remarks>
         /// Champ généré automatiquement.
         /// Pour modifier, déplacez la déclaration de champ du fichier de concepteur dans le fichier code-behind.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+        protected global::System.Web.UI.HtmlControls.HtmlForm formIntervention;
 
         /// <summary>
         /// Contrôle lblMain.
@@ -42,21 +42,30 @@ namespace FormulaireIntervention.Views.Home
         protected global::System.Web.UI.WebControls.Label lblIntervenant;
 
         /// <summary>
-        /// Contrôle DropDownList1.
+        /// Contrôle ddlIntervenant.
         /// </summary>
         /// <remarks>
         /// Champ généré automatiquement.
         /// Pour modifier, déplacez la déclaration de champ du fichier de concepteur dans le fichier code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DropDownList1;
+        protected global::System.Web.UI.WebControls.DropDownList ddlIntervenant;
 
         /// <summary>
-        /// Contrôle test.
+        /// Contrôle lblTypeIntervention.
         /// </summary>
         /// <remarks>
         /// Champ généré automatiquement.
         /// Pour modifier, déplacez la déclaration de champ du fichier de concepteur dans le fichier code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ObjectDataSource test;
+        protected global::System.Web.UI.WebControls.Label lblTypeIntervention;
+
+        /// <summary>
+        /// Contrôle ddlTypeIntervention.
+        /// </summary>
+        /// <remarks>
+        /// Champ généré automatiquement.
+        /// Pour modifier, déplacez la déclaration de champ du fichier de concepteur dans le fichier code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlTypeIntervention;
     }
 }
