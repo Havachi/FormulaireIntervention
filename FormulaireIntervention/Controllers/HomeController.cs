@@ -25,9 +25,7 @@ namespace FormulaireIntervention.Controllers
             ViewBag.Message = "Client Existant";
 
             return View();
-        }
-
-        
+        }       
         public ActionResult Intervention()
         {
             ViewBag.Message = "Intervention";

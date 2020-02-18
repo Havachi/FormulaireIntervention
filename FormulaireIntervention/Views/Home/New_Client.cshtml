@@ -1,4 +1,4 @@
-﻿
+﻿<link href="Content/bootstrap.css" rel="stylesheet" type="text/css" />
 
 @{
 
@@ -6,21 +6,19 @@
 }
 
 @{
-
-
     if (IsPost)
     {
         var firstName = Request.Form["firstName"];
         var lastName = Request.Form["lastName"];
         var address = Request.Form["address"];
         var phoneNumber = Request.Form["phoneNumber"];
-        
+
         try
         {
             var db = new FormulaireIntervention.Models.DBConnection();
             db.InsertNewClientInDatabase(firstName, lastName, address, phoneNumber);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Html.Display(e.Message);
         }
@@ -31,11 +29,9 @@
 
     }
 }
-
-<h2>Nouveau Client</h2>
-
-
-   
+<div class="">
+    <a class="display-4" href="/">Home</a>
+</div>
 <form action="" method="post">
     <div class="form-horizontal">
         <hr />

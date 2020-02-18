@@ -2,17 +2,22 @@
     ViewBag.Title = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1>Formulaire d'intervention</h1>
+<div class="jumbotron jumbotron-fluid">
+    <h1 class="display-4">Formulaire d'intervention</h1>
 </div>
 
 <div class="row">
-    <div class="col-md-4 btn btn-dark">
+    <span class="col-3"></span>
+    <div class="col-6 btn btn-outline-primary">
         @Html.ActionLink("Nouveau Client", "New_Client", "Home")
-
     </div>
-
-    <div class="col-md-4 btn btn-dark">
+    <span class="col-3"></span>
+</div>
+<div class="row">
+    <span class="col-3"></span>
+    <div class="col-6 btn btn-outline-primary">
         @Html.ActionLink("Client Existant", "Existing_Client", "Home")
     </div>
+    <span class="col-3"></span>
 </div>
+
