@@ -20,19 +20,6 @@ namespace FormulaireIntervention.Controllers
 
             return View();
         }
-        [HttpPost]
-        public ActionResult New_Client_Validation(New_Client new_Client)
-        {
-            ViewBag.Message = "Validation";
-
-
-            string firstName = new_Client.FirstName;
-            string lastName = new_Client.LastName;
-            string phoneNumber = new_Client.PhoneNumber;
-            string address = new_Client.Address;
-
-            return View();
-        }    
         public ActionResult Existing_Client()
         {
             ViewBag.Message = "Client Existant";
