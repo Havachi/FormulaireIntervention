@@ -12,11 +12,13 @@ namespace FormulaireIntervention.Models
         private MySqlConnection connection;
         private MySqlCommand command;
 
-
+        //Constructors
         public DBConnection()
         {
             Init();
         }
+       
+        //Privates Methodes
         private void Init()
         {
             MySqlConnectionStringBuilder stringBuilder = new MySqlConnectionStringBuilder();
@@ -36,8 +38,7 @@ namespace FormulaireIntervention.Models
             connection.Dispose();
         }
         
-
-        
+        //Publics Methodes
         public void InsertNewClientInDatabase(string firstName, string lastName, string address, string phoneNumber)
         {         
             string insertCommand = $@"INSERT INTO clients(ClientFirstName, ClientLastName, ClientAddress, ClientPhoneNumber) VALUES ('{firstName}','{lastName}','{address}','{phoneNumber}')";
@@ -53,6 +54,10 @@ namespace FormulaireIntervention.Models
             command = new MySqlCommand(insertCommand, connection);
             int result = command.ExecuteNonQuery();
             connection.Close();
+        }
+        public void InsertNewIntervention()
+        {
+            //todo code dis
         }
 
         public List<string> SelectOneClientInDB(int ID)
@@ -74,7 +79,6 @@ namespace FormulaireIntervention.Models
             connection.Close();
             return resultList;
         }
-
         public int SelectClientIDInDB(string firstName, string lastName)
         {
             string selectCommand = $@"SELECT ClientID FROM clients WHERE ClientFirstName = '{firstName}' AND ClientLastName = '{lastName}'  ;";
@@ -136,6 +140,53 @@ namespace FormulaireIntervention.Models
                 }             
             }
             connection.Close();
+        }             
+        public List<Intervenant> GetListOfIntervenant()
+        {
+            List<Intervenant> listIntervernant = new List<Intervenant>();
+            Intervenant intervenant;
+            string selectCommand = $@"SELECT IntervenantFirstName, IntervenantLastName FROM intervenant;";
+            command = new MySqlCommand(selectCommand, connection);
+            var reader = command.ExecuteReader();
+            if (reader.HasRows)
+            {
+                int counter = 0;
+                while (reader.Read())
+                {
+                    intervenant = new Intervenant();
+                    intervenant.FirstName = reader.GetString(0);
+                    intervenant.LastName = reader.GetString(1);
+                    listIntervernant.Add(intervenant);
+                    counter++;
+                }
+
+            }
+            reader.Close();
+            connection.Close();
+            return listIntervernant;
+        }
+        public List<InterventionType> GetListOfInterventionType()
+        {
+            List<InterventionType> listInterventionTypes = new List<InterventionType>();
+            InterventionType interventionType;
+            string selectCommand = $@"SELECT InterventionTypeName FROM interventiontype;";
+            command = new MySqlCommand(selectCommand, connection);
+            var reader = command.ExecuteReader();
+            if (reader.HasRows)
+            {
+                int counter = 0;
+                while (reader.Read())
+                {
+                    interventionType = new InterventionType();
+                    interventionType.Type = reader.GetString(0);
+                    listInterventionTypes.Add(interventionType);
+                    counter++;
+                }
+
+            }
+            reader.Close();
+            connection.Close();
+            return listInterventionTypes;
         }
     }
 }

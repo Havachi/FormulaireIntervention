@@ -13,17 +13,17 @@ namespace FormulaireIntervention.Models
         public string FirstName
         {
             get { return firstName; }
+            set { firstName = value; }
         }
         public string LastName
         {
             get { return lastName; }
+            set { lastName = value; }
         }
-        public List<string> SelectAllInDB()
+        public IEnumerable<Intervenant> GetIntervenants()
         {
-            List<string> listIntervenant = new List<string>();
-            DBConnection DB = new DBConnection();
-            
-            
+            var DB = new DBConnection();
+            List<Intervenant> listIntervenant = DB.GetListOfIntervenant();
 
             return listIntervenant;
         }
