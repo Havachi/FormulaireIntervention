@@ -1,6 +1,4 @@
-﻿<link href="Content/bootstrap.css" rel="stylesheet" type="text/css" />
-
-@{
+﻿@{
 
     ViewBag.Title = "Nouveau Client";
 }
@@ -8,30 +6,34 @@
 @{
     if (IsPost)
     {
+
         var firstName = Request.Form["firstName"];
         var lastName = Request.Form["lastName"];
         var address = Request.Form["address"];
         var phoneNumber = Request.Form["phoneNumber"];
 
         try
-        {
+        {        
             var db = new FormulaireIntervention.Models.DBConnection();
             db.InsertNewClientInDatabase(firstName, lastName, address, phoneNumber);
         }
         catch (Exception e)
         {
-            Html.Display(e.Message);
+             Response.Write($@"<script>alert('{e.Message}')</script>");
         }
         finally
         {
+            var db = new FormulaireIntervention.Models.DBConnection();
+            Session.Add("clientID", db.GetLastClientID());
             Response.Redirect("Intervention");
         }
 
     }
 }
 <div class="">
-    <a class="display-4" href="/">Home</a>
+    <a class="btn-link" href="/">Home</a>
 </div>
+<h2 class="">Information sur le client</h2>
 <form action="" method="post">
     <div class="form-horizontal">
         <hr />

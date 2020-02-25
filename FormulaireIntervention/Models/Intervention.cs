@@ -10,7 +10,10 @@ namespace FormulaireIntervention.Models
         private Client client;
         private Intervenant intervenant;
         private InterventionType interventionType;
+        public Intervention()
+        {
 
+        }
         public Intervention(Client client, Intervenant intervenant, InterventionType interventionType)
         {
             this.client = client;
@@ -29,6 +32,10 @@ namespace FormulaireIntervention.Models
         public InterventionType InterventionType
         {
             get { return interventionType; }
+        }
+        public int CalculateDuration(int intervStart, int intervStop)
+        {
+            return intervStop - intervStart;
         }
     }
 }

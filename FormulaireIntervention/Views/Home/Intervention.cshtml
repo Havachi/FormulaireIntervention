@@ -4,16 +4,18 @@
 }
 @{
 
+
     var intervenant = "";
     var intervType = "";
-    var intervStart = "";
-    var intervEnd = "";
+    var intervDuration = "";
+
 
     var o = new FormulaireIntervention.Models.Intervenant();
     var it = new FormulaireIntervention.Models.InterventionType();
 
     var listIntervenant = new List<FormulaireIntervention.Models.Intervenant>();
     listIntervenant.AddRange(o.GetIntervenants());
+
     var listInterventionType = new List<FormulaireIntervention.Models.InterventionType>();
     listInterventionType.AddRange(it.GetInterventionTypes());
 
@@ -39,39 +41,51 @@
 
         intervenant = Request.Form["intervIntervenant"];
         intervType = Request.Form["intervType"];
-        intervStart = Request.Form["intervStart"];
-        intervEnd = Request.Form["intervEnd"];
+        intervDuration = Request.Form["InterventionDuratation"];
+
+
 
         try
         {
             var db = new FormulaireIntervention.Models.DBConnection();
-            db.InsertNewIntervention();
+
+            var intervenantID = db.GetIntervenantID(intervenant.Split(' ')[0], intervenant.Split(' ')[1]);
+            db = new FormulaireIntervention.Models.DBConnection();
+            var clientID = db.GetLastClientID();
+            db = new FormulaireIntervention.Models.DBConnection();
+            var intervTypeID = db.GetInterventionTypeID(intervType);
+            db = new FormulaireIntervention.Models.DBConnection();
+            db.InsertNewIntervention(intervenantID,clientID,intervTypeID, intervDuration);
         }
         catch (Exception e)
         {
-            Html.Display(e.Message);
+            Response.Write($@"<script>alert('{e.Message}')</script>");
         }
         finally
         {
-            Response.Redirect("Resume");
+            var db = new FormulaireIntervention.Models.DBConnection();
+            Session.Add("interventionID",db.GetLastInterventionID());
+            Response.Redirect("Client_Sign");
         }
     }
+
+
 }
+    <div class="">
+        <a class="display-1" href="/">Home</a>
+    </div>
 
-<h2>Information sur l'intervention</h2>
-
+<h2 class="">Information sur l'intervention</h2>
 <form action="" method="post">
     <div class="form-horizontal">
         <hr />
         <div class="form-group">
             <label for="intervIntervenant">Intervenant</label>
-            @Html.DropDownList("intervIntervenant", selectListIntervenant, new { @class = "form-control" }));<br>
+            @Html.DropDownList("intervIntervenant", selectListIntervenant, new { @class = "form-control col-lg-3" })<br>
             <label for="intervType">Type d'intervention</label>
-            @Html.DropDownList("intervType", selectListInterventionType, new { @class = "form-control" }));<br>
+            @Html.DropDownList("intervType", selectListInterventionType, new { @class = "form-control col-lg-3" })<br>
             <label for="intervStart">Début de l'intervention</label>
-            <input class="form-control" type="time" id="intervStart" /><br>
-            <label for="intervEnd">Fin de l'intervention</label>
-            <input class="form-control" type="time" id="intervEnd" /><br>
+            <input class="form-control col-lg-3"  name="InterventionDuratation" type="number" step="15" min="0" value="0"/>
             <br />
             <input class="btn btn-default" type="submit" value="Valider" /><br>
         </div>

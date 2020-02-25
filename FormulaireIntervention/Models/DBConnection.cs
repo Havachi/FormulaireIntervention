@@ -43,7 +43,7 @@ namespace FormulaireIntervention.Models
         {         
             string insertCommand = $@"INSERT INTO clients(ClientFirstName, ClientLastName, ClientAddress, ClientPhoneNumber) VALUES ('{firstName}','{lastName}','{address}','{phoneNumber}')";
 
-            command = new MySqlCommand(insertCommand,connection);
+            command = new MySqlCommand(insertCommand, connection);
             int result = command.ExecuteNonQuery();
             connection.Close();
         }
@@ -55,9 +55,12 @@ namespace FormulaireIntervention.Models
             int result = command.ExecuteNonQuery();
             connection.Close();
         }
-        public void InsertNewIntervention()
+        public void InsertNewIntervention(int intervenantID,int interventionClientID, int interventionTypeID, string interventionDuration)
         {
-            //todo code dis
+            string insertCommand = $@"INSERT INTO intervention(InterventionIntervenantID ,InterventionClientID, InterventionTypeID, InterventionDuration) VALUES ('{intervenantID}','{interventionClientID}','{interventionTypeID}','{interventionDuration}')";
+            command = new MySqlCommand(insertCommand, connection);
+            int result = command.ExecuteNonQuery();
+            connection.Close();
         }
 
         public List<string> SelectOneClientInDB(int ID)
@@ -98,19 +101,28 @@ namespace FormulaireIntervention.Models
             connection.Close();
             return resultID;
         }
+        
         public void DeleteUserInDB(int ID)
         {
+            if (connection.State == System.Data.ConnectionState.Closed)
+            {
+                connection.Open();
+            }
             string selectCommand = $@"DELETE FROM clients WHERE ClientID = '{ID}' ;";
             command = new MySqlCommand(selectCommand, connection);
             int result = command.ExecuteNonQuery();
             if (result != 1)
             {
                 throw new UnknownClient("The client isn't existing in database");
-            }   
-            
+            }
+            connection.Close();
         }
         public void DeleteUserInDB(string firstName, string lastName)
         {
+            if (connection.State == System.Data.ConnectionState.Closed)
+            {
+                connection.Open();
+            }
             string selectCommand = $@"SELECT ClientID FROM clients WHERE ClientFirstName = '{firstName}'  AND ClientLastName = '{lastName}' ;";
             command = new MySqlCommand(selectCommand, connection);
             var reader = command.ExecuteReader();
@@ -141,8 +153,13 @@ namespace FormulaireIntervention.Models
             }
             connection.Close();
         }             
+       
         public List<Intervenant> GetListOfIntervenant()
         {
+            if (connection.State == System.Data.ConnectionState.Closed)
+            {
+                connection.Open();
+            }
             List<Intervenant> listIntervernant = new List<Intervenant>();
             Intervenant intervenant;
             string selectCommand = $@"SELECT IntervenantFirstName, IntervenantLastName FROM intervenant;";
@@ -167,6 +184,10 @@ namespace FormulaireIntervention.Models
         }
         public List<InterventionType> GetListOfInterventionType()
         {
+            if (connection.State == System.Data.ConnectionState.Closed)
+            {
+                connection.Open();
+            }
             List<InterventionType> listInterventionTypes = new List<InterventionType>();
             InterventionType interventionType;
             string selectCommand = $@"SELECT InterventionTypeName FROM interventiontype;";
@@ -187,6 +208,130 @@ namespace FormulaireIntervention.Models
             reader.Close();
             connection.Close();
             return listInterventionTypes;
+        }
+        public int GetLastClientID()
+        {
+            if(connection.State == System.Data.ConnectionState.Closed)
+            {
+                connection.Open();
+            }
+            int lastuserID = 0;
+            string selectCommand = $@"SELECT ClientID FROM clients ORDER BY ClientID DESC LIMIT 1;";
+            command = new MySqlCommand(selectCommand, connection);
+            var reader = command.ExecuteReader();
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    lastuserID = reader.GetInt16(0);
+                }
+            }
+
+            return lastuserID;
+        }
+        public int GetLastInterventionID()
+        {
+            if (connection.State == System.Data.ConnectionState.Closed)
+            {
+                connection.Open();
+            }
+            int lastInterventionID = 0;
+            string selectCommand = $@"SELECT InterventionID FROM intervention ORDER BY InterventionID DESC LIMIT 1;";
+            command = new MySqlCommand(selectCommand, connection);
+            var reader = command.ExecuteReader();
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    lastInterventionID = reader.GetInt16(0);
+                }
+            }
+
+            return lastInterventionID;
+        }
+        public int GetIntervenantID(string firstName, string lastName)
+        {
+            if (connection.State == System.Data.ConnectionState.Closed)
+            {
+                connection.Open();
+            }
+            string selectCommand = $@"SELECT IntervenantID FROM intervenant WHERE IntervenantFirstName = '{firstName}' AND IntervenantLastName = '{lastName}'  ;";
+            command = new MySqlCommand(selectCommand, connection);
+            var reader = command.ExecuteReader();
+            int resultID = 0;
+            if (reader.HasRows)
+            {
+                int counter = 0;
+                while (reader.Read())
+                {
+                    resultID = reader.GetInt16(0);
+                    counter++;
+                }
+            }
+            reader.Close();
+            connection.Close();
+            return resultID;
+        }
+        public int GetInterventionTypeID(string interventionTypeName)
+        {
+            if (connection.State == System.Data.ConnectionState.Closed)
+            {
+                connection.Open();
+            }
+            string selectCommand = $@"SELECT InterventionTypeID FROM interventionType WHERE InterventionTypeName = '{interventionTypeName}';";
+            command = new MySqlCommand(selectCommand, connection);
+            var reader = command.ExecuteReader();
+            int resultID = 0;
+            if (reader.HasRows)
+            {
+                int counter = 0;
+                while (reader.Read())
+                {
+                    resultID = reader.GetInt16(0);
+                    counter++;
+                }
+            }
+            reader.Close();
+            connection.Close();
+            return resultID;
+        }
+
+        public List<string> FetchAllInfo(int interventionID)
+        {
+            if (connection.State == System.Data.ConnectionState.Closed)
+            {
+                connection.Open();
+            }
+            var listOfAllInfo = new List<string>();
+
+            //omg j'ai tellement ragé sur cet putain
+            string selectCommand = $@"SELECT intervention.InterventionID,`clients`.`ClientFirstName` AS `ClientFirstName`,`clients`.`ClientLastName` AS `ClientLastName`,`clients`.`ClientAddress` AS `ClientAddress`,`clients`.`ClientPhoneNumber` AS `ClientPhoneNumber`,`intervenant`.`IntervenantFirstName` AS `IntervenantFirstName`,`intervenant`.`IntervenantLastName` AS `IntervenantLastName`,interventiontype.InterventionTypeName, intervention.InterventionDuration 
+                                    FROM (((`intervention` 
+                                    left join `clients` on(`intervention`.`InterventionClientID` = `clients`.`ClientID`)) 
+                                    left join `intervenant` on(`intervention`.`InterventionIntervenantID` = `intervenant`.`IntervenantID`))
+                                    LEFT JOIN interventiontype ON(intervention.InterventionTypeID = interventiontype.InterventionTypeID))
+                                    WHERE intervention.InterventionID = '{interventionID}';";
+
+            command = new MySqlCommand(selectCommand, connection);
+            var reader = command.ExecuteReader();
+            if (reader.HasRows)
+            {
+                int counter = 0;
+                while (reader.Read())
+                {
+                    listOfAllInfo.Add(reader.GetString(1));
+                    listOfAllInfo.Add(reader.GetString(2));
+                    listOfAllInfo.Add(reader.GetString(3));
+                    listOfAllInfo.Add(reader.GetString(4));
+                    listOfAllInfo.Add(reader.GetString(5));
+                    listOfAllInfo.Add(reader.GetString(6));
+                    listOfAllInfo.Add(reader.GetString(7));
+                    listOfAllInfo.Add(reader.GetString(8));
+                    counter++;
+                }
+            }
+
+            return listOfAllInfo;
         }
     }
 }

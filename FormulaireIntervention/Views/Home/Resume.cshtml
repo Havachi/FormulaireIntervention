@@ -1,31 +1,75 @@
-﻿@model FormulaireIntervention.Models.Intervention
-
-@{
+﻿@{
     ViewBag.Title = "Resume";
+
+    var db = new FormulaireIntervention.Models.DBConnection();
+    int interventionID = db.GetLastInterventionID();
+    var listOfAllInfo = new List<string>();
+
+    try
+    {
+        db = new FormulaireIntervention.Models.DBConnection();
+        listOfAllInfo = db.FetchAllInfo(interventionID);
+    }
+    catch(Exception e)
+    {
+        Response.Write($@"<script>alert('{e.Message}')</script>");
+    }
+
+
+
+
+
+    var clientFirstName = listOfAllInfo[0];
+    var clientLastName = listOfAllInfo[1];
+    var clientAddress = listOfAllInfo[2];
+    var clientPhoneNumber = listOfAllInfo[3];
+    var intervenantFullName = $@"{listOfAllInfo[4]} {listOfAllInfo[5]}";
+    var interventionType = listOfAllInfo[6];
+    var interventionDuration = listOfAllInfo[7];
+
+    if (IsPost)
+    {
+        Session.Add("interventionID", interventionID);
+
+        Response.Redirect("Client_Sign");
+    }
 
 
 }
 
-<h2>Résumé</h2>
-
-<div class="row">
-
-    <br />
-    <h4 class="list-group-item-heading">Information sur le client : </h4>
-    <ul class="list-group">
-        
-        <li class="list-group-item"><p>Nom du client : </p></li>
-        <li class="list-group-item"><p>Prénom du client : </p></li>
-        <li class="list-group-item"><p>Adresse du client : </p></li>
-        <li class="list-group-item"><p>Numéro de téléphone du client : </p></li>
-    </ul>
-    <br />
-    <h4>Information sur l'intervention : </h4>
-    <ul class="list-group">
-        <li class="list-group-item">Intervenant :</li>
-        <li class="list-group-item">Type d'intervention :</li>
-        <li class="list-group-item">Durée de l'intervention: </li>
-    </ul>
-
-    <input type="button" value="Valider" class="btn btn-default" />
+<div class="">
+    <a class="btn-link" href="/">Home</a>
 </div>
+<h2 class="">Résumé de l'intervention</h2>
+
+<form action="" method="post">
+    <div class="row">
+
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8 col-sm-12">
+            <ul class="list-group">
+                <li class="list-group-item"><h4>Information sur le client : </h4></li>
+                <li class="list-group-item"><p>Nom du client : @Html.DisplayName(clientLastName)</p></li>
+                <li class="list-group-item"><p>Prénom du client : @Html.DisplayName(clientFirstName) </p></li>
+                <li class="list-group-item"><p>Adresse du client : @Html.DisplayName(clientAddress) </p></li>
+                <li class="list-group-item"><p>Numéro de téléphone du client : @Html.DisplayName(clientPhoneNumber)</p></li>
+            </ul>
+        </div>
+        <div class="col-lg-2"></div>
+    </div>
+    <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8 col-sm-12">
+            <ul class="list-group">
+                <li class="list-group-item"><h4>Information sur l'intervention : </h4></li>
+                <li class="list-group-item">Intervenant : @Html.DisplayName(intervenantFullName)</li>
+                <li class="list-group-item">Type d'intervention : @Html.DisplayName(interventionType)</li>
+                <li class="list-group-item">Durée de l'intervention: @Html.DisplayName(interventionDuration)</li>
+            </ul>
+        </div>
+        <div class="col-lg-2"></div>
+
+        <input type="submit" value="Valider" class="btn btn-default" />
+    </div>
+
+</form>

@@ -17,6 +17,7 @@ namespace FormulaireIntervention.Controllers
         public ActionResult New_Client()
         {
             ViewBag.Message = "Nouveau Client";
+            
 
             return View();
         }
@@ -42,6 +43,12 @@ namespace FormulaireIntervention.Controllers
         public ActionResult Client_Sign()
         {
             ViewBag.Message = "Signature Client";
+
+            return View();
+        }
+        public ActionResult Finish()
+        {
+            ViewBag.Message = "Fin";
 
             return View();
         }
