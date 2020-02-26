@@ -40,7 +40,7 @@ namespace FormulaireIntervention.Controllers
 
             return View();
         }
-        public ActionResult Client_Sign()
+        public ActionResult Signature()
         {
             ViewBag.Message = "Signature Client";
 

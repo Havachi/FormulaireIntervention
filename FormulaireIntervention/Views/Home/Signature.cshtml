@@ -1,0 +1,51 @@
+﻿@model FormulaireIntervention.Models.Signature
+@{
+    var sign = new FormulaireIntervention.Models.Signature();
+    
+    if (IsPost)
+    {
+        sign.SignatureDataUrl = Request.Form["SignatureDataUrl"];
+        sign.OnPost();
+        Response.Redirect("Finish");
+    }
+
+}
+
+@section Scripts{
+    <script type="text/javascript" src="~/Scripts/signature_pad.umd.js"></script>
+    <script>
+        $(function () {
+
+            var canvas = document.querySelector('#signature');
+            var pad = new SignaturePad(canvas);
+
+            $('#accept').click(function () {
+
+                var data = pad.toDataURL();
+
+                $('#savetarget').attr('src', data);
+                $('#SignatureDataUrl').val(data);
+
+                pad.off();
+
+            });
+
+        });
+    </script>
+}
+
+<h2>Client Sign</h2>
+
+
+<div class="container container-fluid">
+    <form action="" method="post" class="form-group">
+        <canvas class="panel panel-default" width="500" height="400" id="signature" style="border:1px solid black"></canvas>
+        <div class="row"><button type="button" id="accept" class="btn btn-primary">Accept signature</button></div>
+            <img class="" width="500" height="400" id="savetarget" style="border:1px solid black">
+
+            <div class="row">
+                <input type="text" id="SignatureDataUrl" asp-for="@sign.SignatureDataUrl">
+                <button type="submit" id="save" class="btn btn-primary">Save</button>
+            </div>
+    </form>
+</div>
