@@ -37,8 +37,9 @@ namespace FormulaireIntervention.Models
         {
             connection.Dispose();
         }
-        
+
         //Publics Methodes
+        #region InsertMethods
         public void InsertNewClientInDatabase(string firstName, string lastName, string address, string phoneNumber)
         {         
             string insertCommand = $@"INSERT INTO clients(ClientFirstName, ClientLastName, ClientAddress, ClientPhoneNumber) VALUES ('{firstName}','{lastName}','{address}','{phoneNumber}')";
@@ -62,7 +63,8 @@ namespace FormulaireIntervention.Models
             int result = command.ExecuteNonQuery();
             connection.Close();
         }
-
+        #endregion
+        #region Select Methods
         public List<string> SelectOneClientInDB(int ID)
         {
             string selectCommand = $@"SELECT * FROM clients WHERE ClientID = '{ID}' ;";
@@ -101,7 +103,8 @@ namespace FormulaireIntervention.Models
             connection.Close();
             return resultID;
         }
-        
+        #endregion
+        #region Delete Methods
         public void DeleteUserInDB(int ID)
         {
             if (connection.State == System.Data.ConnectionState.Closed)
@@ -152,8 +155,9 @@ namespace FormulaireIntervention.Models
                 }             
             }
             connection.Close();
-        }             
-       
+        }
+        #endregion
+        #region Get Methods
         public List<Intervenant> GetListOfIntervenant()
         {
             if (connection.State == System.Data.ConnectionState.Closed)
@@ -208,6 +212,34 @@ namespace FormulaireIntervention.Models
             reader.Close();
             connection.Close();
             return listInterventionTypes;
+        }
+        public List<ExistingClient> GetListOfClients()
+        {
+            if (connection.State == System.Data.ConnectionState.Closed)
+            {
+                connection.Open();
+            }
+            List<ExistingClient> existingClients = new List<ExistingClient>();
+            string selectCommand = $@"SELECT ClientID, ClientFirstName, ClientLastName, ClientAddress, ClientPhoneNumber  FROM clients;";
+            ExistingClient existingClient;
+            command = new MySqlCommand(selectCommand, connection);
+            var reader = command.ExecuteReader();
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    existingClient = new ExistingClient();
+                    existingClient.ID = reader.GetInt16(0);
+                    existingClient.FirstName = reader.GetString(1);
+                    existingClient.LastName = reader.GetString(2);
+                    existingClient.Address = reader.GetString(3);
+                    existingClient.PhoneNumber = reader.GetString(4);
+                    existingClients.Add(existingClient);
+                }
+            }
+            reader.Close();
+            connection.Close();
+            return existingClients;
         }
         public int GetLastClientID()
         {
@@ -296,6 +328,8 @@ namespace FormulaireIntervention.Models
             return resultID;
         }
 
+
+        #endregion
         public List<string> FetchAllInfo(int interventionID)
         {
             if (connection.State == System.Data.ConnectionState.Closed)

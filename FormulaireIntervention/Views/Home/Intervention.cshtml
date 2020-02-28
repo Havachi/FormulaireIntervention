@@ -43,19 +43,22 @@
         intervType = Request.Form["intervType"];
         intervDuration = Request.Form["InterventionDuratation"];
 
-
-
+        int clientID = Session["ClientID"].ToString().AsInt();
+        int intervenantID = 0;
         try
         {
             var db = new FormulaireIntervention.Models.DBConnection();
 
-            var intervenantID = db.GetIntervenantID(intervenant.Split(' ')[0], intervenant.Split(' ')[1]);
+            intervenantID = db.GetIntervenantID(intervenant.Split(' ')[0], intervenant.Split(' ')[1]);
             db = new FormulaireIntervention.Models.DBConnection();
-            var clientID = db.GetLastClientID();
+            
             db = new FormulaireIntervention.Models.DBConnection();
             var intervTypeID = db.GetInterventionTypeID(intervType);
             db = new FormulaireIntervention.Models.DBConnection();
-            db.InsertNewIntervention(intervenantID,clientID,intervTypeID, intervDuration);
+            if (clientID != 0)
+            {
+                db.InsertNewIntervention(intervenantID,clientID,intervTypeID, intervDuration);
+            }
         }
         catch (Exception e)
         {
@@ -65,7 +68,7 @@
         {
             var db = new FormulaireIntervention.Models.DBConnection();
             Session.Add("interventionID",db.GetLastInterventionID());
-            Response.Redirect("Client_Sign");
+            Response.Redirect("Resume");
         }
     }
 
@@ -84,7 +87,7 @@
             @Html.DropDownList("intervIntervenant", selectListIntervenant, new { @class = "form-control col-lg-3" })<br>
             <label for="intervType">Type d'intervention</label>
             @Html.DropDownList("intervType", selectListInterventionType, new { @class = "form-control col-lg-3" })<br>
-            <label for="intervStart">Début de l'intervention</label>
+            <label for="intervStart">Durée de l'intervention</label>
             <input class="form-control col-lg-3"  name="InterventionDuratation" type="number" step="15" min="0" value="0"/>
             <br />
             <input class="btn btn-default" type="submit" value="Valider" /><br>

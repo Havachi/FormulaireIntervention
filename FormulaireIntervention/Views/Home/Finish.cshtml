@@ -3,35 +3,31 @@
     ViewBag.Title = "Finish";
 }
 
-<script>
-    function showSignatureImage() {
-
-        var signData = getCookie();
-
-        if (signData == "") {
-            alert("Marche pas");
-        }
-
-        $('#savetarget').attr('src', signData);
-    }
-
-    function getCookie() {
-        var name = "SignData=";
-        var decodedCookie = decodeURIComponent(document.cookie);
-        var ca = decodedCookie.split(';');
-        for(var i = 0; i <ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-          c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-          return c.substring(name.length, c.length);
-        }
-      }
-      return "";
-    }
-</script>
 
 <h2>Finish</h2>
 
-<img onload="showSignatureImage()" class="" width="500" height="400" id="savetarget" style="border:1px solid black">
+
+<img class="img-fluid" width="500" height="400" id="savetarget" style="border:1px solid black" alt="oof" runat="Server">
+
+<script>
+    var SignatureData = sessionStorage.getItem('signatureData');
+    console.log(SignatureData);
+    console.log("supfam");
+
+    document.getElementById("savetarget").setAttribute("src", SignatureData);
+</script>
+
+@{
+
+    string SignData = "";
+    try
+    {
+    }
+    catch (NullReferenceException e)
+    {
+
+        <script>alert("Error while loading signature data : @e.Message")</script>
+    }
+
+
+}

@@ -18,7 +18,7 @@
 
 
 
-
+    var clientID = Session["ClientID"].ToString();
     var clientFirstName = listOfAllInfo[0];
     var clientLastName = listOfAllInfo[1];
     var clientAddress = listOfAllInfo[2];
@@ -29,9 +29,7 @@
 
     if (IsPost)
     {
-        Session.Add("interventionID", interventionID);
-
-        Response.Redirect("Client_Sign");
+        Response.Redirect("Signature");
     }
 
 
@@ -49,6 +47,7 @@
         <div class="col-lg-8 col-sm-12">
             <ul class="list-group">
                 <li class="list-group-item"><h4>Information sur le client : </h4></li>
+                <li class="list-group-item"><p>ID du Client : @Html.DisplayName(clientID)</p></li>
                 <li class="list-group-item"><p>Nom du client : @Html.DisplayName(clientLastName)</p></li>
                 <li class="list-group-item"><p>Prénom du client : @Html.DisplayName(clientFirstName) </p></li>
                 <li class="list-group-item"><p>Adresse du client : @Html.DisplayName(clientAddress) </p></li>

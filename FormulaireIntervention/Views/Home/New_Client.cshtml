@@ -1,6 +1,7 @@
 ﻿@{
 
     ViewBag.Title = "Nouveau Client";
+    Session.Clear();
 }
 
 @{
@@ -24,7 +25,8 @@
         finally
         {
             var db = new FormulaireIntervention.Models.DBConnection();
-            Session.Add("clientID", db.GetLastClientID());
+            //Session.Add("clientID", db.GetLastClientID());
+            Session["ClientID"] = db.GetLastClientID();
             Response.Redirect("Intervention");
         }
 
