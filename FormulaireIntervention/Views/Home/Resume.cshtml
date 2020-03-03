@@ -16,19 +16,39 @@
     }
 
 
-
-
     var clientID = Session["ClientID"].ToString();
     var clientFirstName = listOfAllInfo[0];
     var clientLastName = listOfAllInfo[1];
     var clientAddress = listOfAllInfo[2];
     var clientPhoneNumber = listOfAllInfo[3];
     var intervenantFullName = $@"{listOfAllInfo[4]} {listOfAllInfo[5]}";
+    var intervenantFirstName = $@"{listOfAllInfo[5]}";
+    var intervenantLastName = $@"{listOfAllInfo[4]}";
     var interventionType = listOfAllInfo[6];
     var interventionDuration = listOfAllInfo[7];
 
+    var clientObj = new FormulaireIntervention.Models.New_Client();
+    var intervenantObj = new FormulaireIntervention.Models.Intervenant();
+    var interventionTypeObj = new FormulaireIntervention.Models.InterventionType();
+
+
+
     if (IsPost)
     {
+        clientObj.ID = clientID.AsInt();
+        clientObj.FirstName = clientFirstName;
+        clientObj.LastName = clientLastName;
+        clientObj.Address = clientAddress;
+        clientObj.PhoneNumber = clientPhoneNumber;
+
+        intervenantObj.FirstName = intervenantFirstName;
+        intervenantObj.LastName = intervenantLastName;
+
+        interventionTypeObj.Type = interventionType;
+
+        var interventionObj = new FormulaireIntervention.Models.Intervention(clientObj,intervenantObj,interventionTypeObj);
+        interventionObj.CreateXML();
+
         Response.Redirect("Signature");
     }
 

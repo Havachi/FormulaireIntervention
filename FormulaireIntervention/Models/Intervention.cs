@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Xml;
 
 namespace FormulaireIntervention.Models
 {
@@ -33,9 +34,42 @@ namespace FormulaireIntervention.Models
         {
             get { return interventionType; }
         }
-        public int CalculateDuration(int intervStart, int intervStop)
+
+        public void CreateXML()
         {
-            return intervStop - intervStart;
+            var DB = new DBConnection();
+            XmlWriterSettings settings = new XmlWriterSettings
+            {
+                Indent = true,
+                IndentChars = ("   "),
+                CloseOutput = true,
+                OmitXmlDeclaration = true
+            };
+
+            using (XmlWriter writer = XmlWriter.Create($@"Intervention{DB.GetLastInterventionID()}.xml"))
+            {
+                writer.WriteStartElement("Intervention");
+
+                writer.WriteStartElement("Client");
+                writer.WriteElementString("ID", this.client.ID.ToString());
+                writer.WriteElementString("FirstName", this.client.FirstName);
+                writer.WriteElementString("LastName", this.client.LastName);
+                writer.WriteElementString("LastName", this.client.Address);
+                writer.WriteElementString("LastName", this.client.PhoneNumber);
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("Intervenant");
+
+                writer.WriteElementString("FirstName", this.Intervenant.FirstName);
+                writer.WriteElementString("LastName", this.Intervenant.LastName);
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("Intervention_Type");
+                writer.WriteElementString("Type", this.interventionType.Type);
+                writer.WriteEndElement();
+                writer.WriteEndElement();
+                writer.Flush();
+            }
         }
     }
 }
