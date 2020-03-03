@@ -1,62 +1,17 @@
-﻿@model FormulaireIntervention.Models.Signature
-@{
-    var sign = new FormulaireIntervention.Models.Signature();
-
-    if (IsPost)
-    {
-        if (Request.Form["data"] != null)
-        {
-            Session["SignatureData"] = Request.Form["data"].ToString();
-        }
-        else if(sign.SignatureDataUrl != null)
-        {
-            Session["SignatureData"] = sign.SignatureDataUrl;
-        }
-        Response.Redirect("Finish");
-    }
-
-}
-
-@section Scripts{
-    <script type="text/javascript" src="~/Scripts/signature_pad.umd.js" runat="server"></script>
-    <script>
-        $(function () {
-
-            var canvas = document.querySelector('#signature');
-            var pad = new SignaturePad(canvas);
-            var h = this.getElementById("#data");
-            var data = "";
-            $('#accept').click(function () {
-
-                data = pad.toDataURL();
-                $('#savetarget').attr('src', data);              
-                var base64data = data.split(",")[1];
-                var binarydata = atob(base64data);
-                
-                
-                pad.off();
-
-            });
-            $('#save').click(function () {
-                sessionStorage.setItem("signatureData", data);
-            });
-        });
-    </script>
-}
-
-<h2>Client Sign</h2>
+﻿
+<link href="~/Content/signature-pad.css"/>
+<div id="signature-pad" class="container container-fluid align-content-center">
+    <div class="signature-pad--body">
+        <canvas style="border:1px solid black" class="canvas-signature"></canvas>
+    </div>
+    <div class="signature-pad--actions row">
+            <button type="button" class="button clear btn btn-danger col-6" data-action="clear">Clear</button>
+            <button type="button" class="button save btn-primary col-6" data-action="save-png">Save</button>
+    </div>
 
 
-<div class="container container-fluid">
-    <form action="" method="post" class="form-group" runat="server">
-        <canvas class="panel panel-default" width="500" height="400" id="signature" style="border:1px solid black"></canvas>
-        <div class="row"><button type="button" id="accept" class="btn btn-primary">Accept signature</button></div>
-            <img class="img-fluid" width="500" height="400" id="savetarget" style="border:1px solid black" runat="server">
-            <div class="row" id="div2">
-                <input type="hidden" id="data" name="data" runat="server">
-                <button type="submit" id="save" class="btn btn-primary">Save</button>
-                <a name="dlSign" id="dlSign">Download Signature</a>
-
-            </div>
-    </form>
 </div>
+
+<script src="~/Scripts/signature_pad.umd.js"></script>
+<script src="~/Scripts/app.js"></script>
+
