@@ -17,20 +17,20 @@ namespace FormulaireIntervention.Models
         {
         }
 
-        protected Client(string FirstName, string LastName, string PhoneNumber, string Address)
+        protected Client(string firstName, string lastName, string phoneNumber, string address)
         {
-            this.firstName = FirstName;
-            this.lastName = LastName;   
-            this.phoneNumber = PhoneNumber;
-            this.address = Address;
+            this.firstName = firstName;
+            this.lastName = lastName;   
+            this.phoneNumber = phoneNumber;
+            this.address = address;
         }
-        protected Client(int id, string FirstName, string LastName, string PhoneNumber, string Address)
+        protected Client(int id, string firstName, string lastName, string phoneNumber, string address)
         {
             this.id = id;
-            this.firstName = FirstName;
-            this.lastName = LastName;
-            this.phoneNumber = PhoneNumber;
-            this.address = Address;
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.phoneNumber = phoneNumber;
+            this.address = address;
         }
         public int ID
         {

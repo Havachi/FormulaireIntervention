@@ -13,7 +13,7 @@ namespace FormulaireIntervention.Models
         }
         public New_Client(string FirstName, string LastName, string PhoneNumber, string Address) : base(FirstName, LastName, PhoneNumber, Address)
         {
-       
+            
         }
     }
 }

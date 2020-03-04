@@ -19,4 +19,11 @@ namespace FormulaireIntervention.Models
 
         }
     }
+    public class MultipleUserWithSameName : Exception
+    {
+        public MultipleUserWithSameName (string message) : base(message)
+        {
+
+        }
+    }
 }

@@ -1,33 +1,6 @@
-﻿
-@{
-    ViewBag.Title = "Finish";
+﻿@{
+    ViewBag.Title = "End";
 }
+<h3>Tout c'est bien passé (heureusement)</h3>
 
-
-<h2>Finish</h2>
-
-
-<img class="img-fluid" width="500" height="400" id="savetarget" style="border:1px solid black" alt="oof" runat="Server">
-
-<script>
-    var SignatureData = sessionStorage.getItem('signatureData');
-    console.log(SignatureData);
-    console.log("supfam");
-
-    document.getElementById("savetarget").setAttribute("src", SignatureData);
-</script>
-
-@{
-
-    string SignData = "";
-    try
-    {
-    }
-    catch (NullReferenceException e)
-    {
-
-        <script>alert("Error while loading signature data : @e.Message")</script>
-    }
-
-
-}
+<a href="/">Acceuil</a>

@@ -1,40 +1,24 @@
 ﻿@{
     ViewBag.Title = "Resume";
 
-    var db = new FormulaireIntervention.Models.DBConnection();
-    int interventionID = db.GetLastInterventionID();
-    var listOfAllInfo = new List<string>();
-
-    try
-    {
-        db = new FormulaireIntervention.Models.DBConnection();
-        listOfAllInfo = db.FetchAllInfo(interventionID);
-    }
-    catch(Exception e)
-    {
-        Response.Write($@"<script>alert('{e.Message}')</script>");
-    }
-
-
-    var clientID = Session["ClientID"].ToString();
-    var clientFirstName = listOfAllInfo[0];
-    var clientLastName = listOfAllInfo[1];
-    var clientAddress = listOfAllInfo[2];
-    var clientPhoneNumber = listOfAllInfo[3];
-    var intervenantFullName = $@"{listOfAllInfo[4]} {listOfAllInfo[5]}";
-    var intervenantFirstName = $@"{listOfAllInfo[5]}";
-    var intervenantLastName = $@"{listOfAllInfo[4]}";
-    var interventionType = listOfAllInfo[6];
-    var interventionDuration = listOfAllInfo[7];
-
-    var clientObj = new FormulaireIntervention.Models.New_Client();
-    var intervenantObj = new FormulaireIntervention.Models.Intervenant();
-    var interventionTypeObj = new FormulaireIntervention.Models.InterventionType();
+    string clientID = "";
+    string clientFirstName= "";
+    string clientLastName= "";
+    string clientAddress= "";
+    string clientPhoneNumber= "";
+    string intervenantFullName= "";
+    string intervenantFirstName= "";
+    string intervenantLastName= "";
+    string interventionType= "";
+    string interventionDuration= "";
 
 
 
     if (IsPost)
     {
+        var clientObj = new FormulaireIntervention.Models.New_Client();
+        var intervenantObj = new FormulaireIntervention.Models.Intervenant();
+        var interventionTypeObj = new FormulaireIntervention.Models.InterventionType();
         clientObj.ID = clientID.AsInt();
         clientObj.FirstName = clientFirstName;
         clientObj.LastName = clientLastName;
@@ -47,9 +31,44 @@
         interventionTypeObj.Type = interventionType;
 
         var interventionObj = new FormulaireIntervention.Models.Intervention(clientObj,intervenantObj,interventionTypeObj);
-        interventionObj.CreateXML();
+        try
+        {
+            interventionObj.CreateXML();
+        }catch(Exception e)
+        {
+
+        }
+
 
         Response.Redirect("Signature");
+    }
+    else
+    {
+        var db = new FormulaireIntervention.Models.DBConnection();
+        int interventionID = db.GetLastInterventionID();
+        var listOfAllInfo = new List<string>();
+        try
+        {
+            db = new FormulaireIntervention.Models.DBConnection();
+            listOfAllInfo = db.FetchAllInfo(interventionID);
+            var verif = new FormulaireIntervention.Models.Verification();
+            listOfAllInfo = verif.VerifyClientData(Session["ClientID"].ToString().AsInt(), listOfAllInfo);
+            
+        }
+        catch(Exception e)
+        {
+            Response.Write($@"<script>alert('{e.Message}')</script>");
+        }
+        clientID = Session["ClientID"].ToString();
+        clientFirstName = listOfAllInfo[0];
+        clientLastName = listOfAllInfo[1];
+        clientAddress = listOfAllInfo[2];
+        clientPhoneNumber = listOfAllInfo[3];
+        intervenantFullName = $@"{listOfAllInfo[4]} {listOfAllInfo[5]}";
+        intervenantFirstName = $@"{listOfAllInfo[5]}";
+        intervenantLastName = $@"{listOfAllInfo[4]}";
+        interventionType = listOfAllInfo[6];
+        interventionDuration = listOfAllInfo[7];
     }
 
 

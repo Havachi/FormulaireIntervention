@@ -41,7 +41,11 @@ namespace FormulaireIntervention.Models
         //Publics Methodes
         #region InsertMethods
         public void InsertNewClientInDatabase(string firstName, string lastName, string address, string phoneNumber)
-        {         
+        {
+            if (connection.State == System.Data.ConnectionState.Closed)
+            {
+                connection.Open();
+            }
             string insertCommand = $@"INSERT INTO clients(ClientFirstName, ClientLastName, ClientAddress, ClientPhoneNumber) VALUES ('{firstName}','{lastName}','{address}','{phoneNumber}')";
 
             command = new MySqlCommand(insertCommand, connection);
@@ -50,6 +54,10 @@ namespace FormulaireIntervention.Models
         }
         public void InsertNewClientInDatabase(int ID,string firstName, string lastName, string address, string phoneNumber)
         {
+            if (connection.State == System.Data.ConnectionState.Closed)
+            {
+                connection.Open();
+            }
             string insertCommand = $@"INSERT INTO clients(ClientID,ClientFirstName, ClientLastName, ClientAddress, ClientPhoneNumber) VALUES ('{ID}','{firstName}','{lastName}','{address}','{phoneNumber}')";
 
             command = new MySqlCommand(insertCommand, connection);
@@ -58,7 +66,22 @@ namespace FormulaireIntervention.Models
         }
         public void InsertNewIntervention(int intervenantID,int interventionClientID, int interventionTypeID, string interventionDuration)
         {
+            if (connection.State == System.Data.ConnectionState.Closed)
+            {
+                connection.Open();
+            }
             string insertCommand = $@"INSERT INTO intervention(InterventionIntervenantID ,InterventionClientID, InterventionTypeID, InterventionDuration) VALUES ('{intervenantID}','{interventionClientID}','{interventionTypeID}','{interventionDuration}')";
+            command = new MySqlCommand(insertCommand, connection);
+            int result = command.ExecuteNonQuery();
+            connection.Close();
+        }
+        public void InsertClientSignature(int clientID, int interventionID, string signatureData)
+        {
+            if (connection.State == System.Data.ConnectionState.Closed)
+            {
+                connection.Open();
+            }
+            string insertCommand = $@"INSERT INTO clientsignature(clientID ,interventionID, signatureData) VALUES ('{clientID}','{interventionID}','{signatureData}')";
             command = new MySqlCommand(insertCommand, connection);
             int result = command.ExecuteNonQuery();
             connection.Close();
@@ -241,6 +264,34 @@ namespace FormulaireIntervention.Models
             connection.Close();
             return existingClients;
         }
+        public int GetClientIDFromName(string firstname, string lastname)
+        {
+            if (connection.State == System.Data.ConnectionState.Closed)
+            {
+                connection.Open();
+            }
+            int clientID = 0;
+            string selectCommand = $@"SELECT ClientID FROM clients WHERE ClientFirstName = {firstname} AND ClientLastName = {lastname}";
+            command = new MySqlCommand(selectCommand, connection);
+            var reader = command.ExecuteReader();
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    if(clientID == 0)
+                    {
+                        clientID = reader.GetInt16(0);
+                    }
+                    else
+                    {
+                        throw new MultipleUserWithSameName("More than one user has the same First name AND Last name");
+                    }                    
+                }
+            }
+            reader.Close();
+            connection.Close();
+            return clientID;
+        }
         public int GetLastClientID()
         {
             if(connection.State == System.Data.ConnectionState.Closed)
@@ -258,7 +309,8 @@ namespace FormulaireIntervention.Models
                     lastuserID = reader.GetInt16(0);
                 }
             }
-
+            reader.Close();
+            connection.Close();
             return lastuserID;
         }
         public int GetLastInterventionID()
@@ -278,7 +330,8 @@ namespace FormulaireIntervention.Models
                     lastInterventionID = reader.GetInt16(0);
                 }
             }
-
+            reader.Close();
+            connection.Close();
             return lastInterventionID;
         }
         public int GetIntervenantID(string firstName, string lastName)
@@ -327,7 +380,27 @@ namespace FormulaireIntervention.Models
             connection.Close();
             return resultID;
         }
-
+        public int GetClientIDFromIntervention(int interventionID)
+        {
+            if (connection.State == System.Data.ConnectionState.Closed)
+            {
+                connection.Open();
+            }
+            int clientID = 0;
+            string selectCommand = $@"SELECT InterventionClientID FROM intervention WHERE InterventionID = {interventionID}";
+            command = new MySqlCommand(selectCommand, connection);
+            var reader = command.ExecuteReader();
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    clientID = reader.GetInt16(0);
+                }
+            }
+            reader.Close();
+            connection.Close();
+            return clientID;
+        }
 
         #endregion
         public List<string> FetchAllInfo(int interventionID)
@@ -338,7 +411,7 @@ namespace FormulaireIntervention.Models
             }
             var listOfAllInfo = new List<string>();
 
-            //omg j'ai tellement ragé sur cet putain
+            //omg j'ai tellement ragé sur cet putain de reuket
             string selectCommand = $@"SELECT intervention.InterventionID,`clients`.`ClientFirstName` AS `ClientFirstName`,`clients`.`ClientLastName` AS `ClientLastName`,`clients`.`ClientAddress` AS `ClientAddress`,`clients`.`ClientPhoneNumber` AS `ClientPhoneNumber`,`intervenant`.`IntervenantFirstName` AS `IntervenantFirstName`,`intervenant`.`IntervenantLastName` AS `IntervenantLastName`,interventiontype.InterventionTypeName, intervention.InterventionDuration 
                                     FROM (((`intervention` 
                                     left join `clients` on(`intervention`.`InterventionClientID` = `clients`.`ClientID`)) 

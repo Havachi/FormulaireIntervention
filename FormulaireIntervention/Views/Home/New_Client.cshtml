@@ -14,19 +14,27 @@
         var phoneNumber = Request.Form["phoneNumber"];
 
         try
-        {        
+        {
             var db = new FormulaireIntervention.Models.DBConnection();
             db.InsertNewClientInDatabase(firstName, lastName, address, phoneNumber);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-             Response.Write($@"<script>alert('{e.Message}')</script>");
+            <script>alert("@ex.Message;")</script>
         }
         finally
         {
             var db = new FormulaireIntervention.Models.DBConnection();
-            //Session.Add("clientID", db.GetLastClientID());
-            Session["ClientID"] = db.GetLastClientID();
+            try
+            {
+                Session["ClientID"] = db.GetLastClientID();
+            }
+            catch (Exception ex)
+            {
+                <script>alert("@ex.Message;")</script>
+            }
+
+
             Response.Redirect("Intervention");
         }
 

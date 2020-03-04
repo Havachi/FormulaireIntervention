@@ -35,6 +35,7 @@ namespace FormulaireIntervention.Models
             get { return interventionType; }
         }
 
+
         public void CreateXML()
         {
             var DB = new DBConnection();
@@ -45,7 +46,7 @@ namespace FormulaireIntervention.Models
                 CloseOutput = true,
                 OmitXmlDeclaration = true
             };
-
+            XmlDocument xmlDocument = new XmlDocument();
             using (XmlWriter writer = XmlWriter.Create($@"Intervention{DB.GetLastInterventionID()}.xml"))
             {
                 writer.WriteStartElement("Intervention");
@@ -68,8 +69,10 @@ namespace FormulaireIntervention.Models
                 writer.WriteElementString("Type", this.interventionType.Type);
                 writer.WriteEndElement();
                 writer.WriteEndElement();
-                writer.Flush();
+                xmlDocument.Save(writer);
+                writer.Flush();               
             }
+            
         }
     }
 }

@@ -7,16 +7,14 @@ namespace FormulaireIntervention.Models
 {
     public class Signature
     {
-        public string SignatureDataUrl { get; set; }
+        public string SignatureData { get; set; }
         public void OnPost()
         {
-            if (string.IsNullOrWhiteSpace(SignatureDataUrl))
+            if (string.IsNullOrWhiteSpace(SignatureData))
             {
                 return;
             }
-
-            var base64Signature = SignatureDataUrl.Split(',')[1];
-            var binarySignature = Convert.FromBase64String(base64Signature);
+            var binarySignature = Convert.FromBase64String(SignatureData);
 
             System.IO.File.WriteAllBytes("Signature.png", binarySignature); 
         }
