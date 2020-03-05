@@ -7,18 +7,26 @@ using MySql.Data.MySqlClient;
 
 namespace FormulaireIntervention.Models
 {
+    /// <summary>
+    /// Class that contains methodes for interaction with the database
+    /// </summary>
     public class DBConnection
     {
         private MySqlConnection connection;
         private MySqlCommand command;
 
-        //Constructors
+        /// <summary>
+        /// Constructor for DBConnection, initalize the connection with the Database 
+        /// </summary>
         public DBConnection()
         {
             Init();
         }
-       
-        //Privates Methodes
+
+        #region Private Methodes
+        /// <summary>
+        /// Method that initialize the connection with the databas by opening it.
+        /// </summary>
         private void Init()
         {
             MySqlConnectionStringBuilder stringBuilder = new MySqlConnectionStringBuilder();
@@ -29,37 +37,41 @@ namespace FormulaireIntervention.Models
             connection = new MySqlConnection(stringBuilder.ToString());
             connection.Open();
         }
-        private void Open(MySqlConnection connection)
-        {
-            connection.Open();
-        }
+        /// <summary>
+        /// Private Method for closing the connection with the database
+        /// </summary>
+        /// <param name="connection"></param>
         private void Close(MySqlConnection connection)
         {
             connection.Dispose();
         }
-
-        //Publics Methodes
+        #endregion
+        #region Public Methodes
         #region InsertMethods
+        /// <summary>
+        /// Insert a New client in the database with all required fields
+        /// </summary>
+        /// <param name="firstName">The first name of the client</param>
+        /// <param name="lastName">The last name of the client</param>
+        /// <param name="address">The address of the client</param>
+        /// <param name="phoneNumber">The phone number of the client</param>
         public void InsertNewClientInDatabase(string firstName, string lastName, string address, string phoneNumber)
         {
-            if (connection.State == System.Data.ConnectionState.Closed)
+            try{
+                if (connection.State == System.Data.ConnectionState.Closed)
+                {
+                    connection.Open();
+                }
+            }
+            catch (InvalidOperationException e)
             {
-                connection.Open();
+                throw;
+            }
+            catch (MySqlException e)
+            {
+                throw;
             }
             string insertCommand = $@"INSERT INTO clients(ClientFirstName, ClientLastName, ClientAddress, ClientPhoneNumber) VALUES ('{firstName}','{lastName}','{address}','{phoneNumber}')";
-
-            command = new MySqlCommand(insertCommand, connection);
-            int result = command.ExecuteNonQuery();
-            connection.Close();
-        }
-        public void InsertNewClientInDatabase(int ID,string firstName, string lastName, string address, string phoneNumber)
-        {
-            if (connection.State == System.Data.ConnectionState.Closed)
-            {
-                connection.Open();
-            }
-            string insertCommand = $@"INSERT INTO clients(ClientID,ClientFirstName, ClientLastName, ClientAddress, ClientPhoneNumber) VALUES ('{ID}','{firstName}','{lastName}','{address}','{phoneNumber}')";
-
             command = new MySqlCommand(insertCommand, connection);
             int result = command.ExecuteNonQuery();
             connection.Close();
@@ -96,11 +108,14 @@ namespace FormulaireIntervention.Models
             var resultList = new List<string>();
             if (reader.HasRows)
             {
-                int counter = 0;
+
                 while (reader.Read())
                 {
-                    resultList.Add(reader.GetString(counter));
-                    counter++; 
+                    resultList.Add(reader.GetString(0));
+                    resultList.Add(reader.GetString(1));
+                    resultList.Add(reader.GetString(2));
+                    resultList.Add(reader.GetString(3));
+                    resultList.Add(reader.GetString(4));
                 }
             }
             reader.Close();
@@ -125,6 +140,23 @@ namespace FormulaireIntervention.Models
             reader.Close();
             connection.Close();
             return resultID;
+        }
+        
+        public bool IsClientAlreadyInDB(string firstName, string lastName)
+        {
+            bool isClientInDB = false;
+            string selectCommand = $@"SELECT ClientID FROM clients WHERE ClientFirstName = '{firstName}' AND ClientLastName = '{lastName}'  ;";
+            command = new MySqlCommand(selectCommand, connection);
+            var reader = command.ExecuteReader();
+            if (reader.HasRows)
+            {
+                isClientInDB = true;
+            }
+            reader.Close();
+            connection.Close();
+
+            return isClientInDB;
+;
         }
         #endregion
         #region Delete Methods
@@ -281,11 +313,7 @@ namespace FormulaireIntervention.Models
                     if(clientID == 0)
                     {
                         clientID = reader.GetInt16(0);
-                    }
-                    else
-                    {
-                        throw new MultipleUserWithSameName("More than one user has the same First name AND Last name");
-                    }                    
+                    }                 
                 }
             }
             reader.Close();
@@ -440,5 +468,6 @@ namespace FormulaireIntervention.Models
 
             return listOfAllInfo;
         }
+        #endregion
     }
 }

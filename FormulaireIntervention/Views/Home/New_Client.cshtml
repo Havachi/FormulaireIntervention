@@ -2,12 +2,13 @@
 
     ViewBag.Title = "Nouveau Client";
     Session.Clear();
+    var errors = new List<string>();
 }
 
 @{
     if (IsPost)
     {
-
+        var db = new FormulaireIntervention.Models.DBConnection();
         var firstName = Request.Form["firstName"];
         var lastName = Request.Form["lastName"];
         var address = Request.Form["address"];
@@ -15,29 +16,32 @@
 
         try
         {
-            var db = new FormulaireIntervention.Models.DBConnection();
-            db.InsertNewClientInDatabase(firstName, lastName, address, phoneNumber);
-        }
-        catch (Exception ex)
-        {
-            <script>alert("@ex.Message;")</script>
-        }
-        finally
-        {
-            var db = new FormulaireIntervention.Models.DBConnection();
-            try
-            {
-                Session["ClientID"] = db.GetLastClientID();
+            var verif = new FormulaireIntervention.Models.Verifications();
+
+            if (!verif.DuplicateClientVerification(firstName, lastName))
+            {                
+                db.InsertNewClientInDatabase(firstName, lastName, address, phoneNumber);
             }
-            catch (Exception ex)
-            {
-                <script>alert("@ex.Message;")</script>
-            }
+            Session["ClientID"] = db.GetClientIDFromName(firstName,lastName);
 
-
-            Response.Redirect("Intervention");
+        }
+        catch (FormulaireIntervention.Models.MultipleUserWithSameName ex)
+        {
+            errors.Add(ex.Message);
+            Response.Redirect("New_Client");
+        }
+        catch(InvalidOperationException ex)
+        {
+            errors.Add(ex.Message);
+            Response.Redirect("New_Client");
+        }
+        catch(MySql.Data.MySqlClient.MySqlException ex)
+        {
+            errors.Add(ex.Message);        
+            Response.Redirect("New_Client");
         }
 
+        Response.Redirect("Intervention");
     }
 }
 <div class="">
@@ -47,11 +51,20 @@
 <form action="" method="post">
     <div class="form-horizontal">
         <hr />
+        @{ 
+            if (errors.Count > 0)
+            {
+                foreach(var error in errors)
+                {
+                    <h5 class="alert-danger">@error</h5>
+                }
+            }
+        }
         <div class="form-group">
-            <label for="firstName">Nom: </label>
+            <label for="firstName">Prénom: </label>
             <input class="form-control" type="text" id="firstName" name="firstName"><br>
 
-            <label for="lastName">Prénom: </label>
+            <label for="lastName">Nom: </label>
             <input class="form-control" type="text" id="lastName" name="lastName"><br>
 
             <label for="address">Adresse: </label>

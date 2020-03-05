@@ -51,7 +51,7 @@
         {
             db = new FormulaireIntervention.Models.DBConnection();
             listOfAllInfo = db.FetchAllInfo(interventionID);
-            var verif = new FormulaireIntervention.Models.Verification();
+            var verif = new FormulaireIntervention.Models.Verifications();
             listOfAllInfo = verif.VerifyClientData(Session["ClientID"].ToString().AsInt(), listOfAllInfo);
             
         }
