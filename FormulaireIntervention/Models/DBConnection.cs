@@ -51,6 +51,7 @@ namespace FormulaireIntervention.Models
         /// <summary>
         /// Insert a New client in the database with all required fields
         /// </summary>
+        /// <exception cref="InvalidOperationException"></exception>
         /// <param name="firstName">The first name of the client</param>
         /// <param name="lastName">The last name of the client</param>
         /// <param name="address">The address of the client</param>
