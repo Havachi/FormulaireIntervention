@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using FormulaireIntervention.Models;
 
 namespace FormulaireIntervention.Controllers
 {
@@ -17,15 +18,15 @@ namespace FormulaireIntervention.Controllers
         {
             ViewBag.Message = "Nouveau Client";
             
+
             return View();
         }
-
-        public ActionResult Contact()
+        public ActionResult Existing_Client()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Client Existant";
 
             return View();
-        }
+        }       
         public ActionResult Intervention()
         {
             ViewBag.Message = "Intervention";
@@ -35,11 +36,19 @@ namespace FormulaireIntervention.Controllers
         public ActionResult Resume()
         {
             ViewBag.Message = "Résumé";
+
+
             return View();
         }
-        public ActionResult Client_Sign()
+        public ActionResult Signature()
         {
             ViewBag.Message = "Signature Client";
+
+            return View();
+        }
+        public ActionResult Finish()
+        {
+            ViewBag.Message = "Fin";
 
             return View();
         }
